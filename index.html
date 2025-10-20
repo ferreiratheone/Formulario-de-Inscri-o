@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Inscrição</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2canvas para baixar o card como imagem -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6">
+
+    <div class="container mx-auto max-w-5xl bg-white rounded-2xl shadow-xl p-6 md:p-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-6">Crie seu Cartão de Inscrição</h1>
+        <p class="text-center text-gray-500 mb-8">Preencha os dados abaixo para gerar uma prévia do seu cartão.</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Coluna do Formulário -->
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Seus Dados</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-600">Nome Completo</label>
+                        <input type="text" id="nome" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="telefone" class="block text-sm font-medium text-gray-600">Telefone</label>
+                        <input type="text" id="telefone" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="endereco" class="block text-sm font-medium text-gray-600">Endereço</o>
+                        <input type="text" id="endereco" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-600">E-mail</label>
+                        <input type="email" id="email" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="imagem" class="block text-sm font-medium text-gray-600">Foto de Perfil</label>
+                        <input type="file" id="imagem" accept="image/*" class="mt-1 block w-full text-sm text-gray-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-indigo-50 file:text-indigo-700
+                            hover:file:bg-indigo-100">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna do Preview do Cartão -->
+            <div class="flex flex-col items-center justify-center">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Pré-visualização</h2>
+                <div id="card-preview" class="bg-white p-8 shadow-lg rounded-lg w-full max-w-lg border border-gray-200">
+                    <h3 class="text-center font-bold text-2xl mb-6" style="color: #8acc82;">formulário de Inscrição - EBD</h3>
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
+                         <div class="w-28 h-28 flex-shrink-0">
+                             <img id="preview-img" src="https://placehold.co/150x150/e0e0e0/777?text=Foto" alt="Foto de perfil" class="w-full h-full object-cover rounded-md border-2 border-gray-300">
+                         </div>
+                        <div class="text-lg text-gray-800 space-y-2 break-words">
+                            <p><span class="font-bold">Nome:</span> <span id="preview-nome"></span></p>
+                            <p><span class="font-bold">Telefone:</span> <span id="preview-telefone"></span></p>
+                            <p><span class="font-bold">Endereço:</span> <span id="preview-endereco"></span></p>
+                            <p><span class="font-bold">Email:</span> <span id="preview-email"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Botão de Download -->
+        <div class="mt-8 text-center">
+            <button id="download-btn" class="bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 ease-in-out shadow-lg">
+                Baixar Cartão como Imagem
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Selecionando os elementos do formulário e da pré-visualização
+        const nomeInput = document.getElementById('nome');
+        const telefoneInput = document.getElementById('telefone');
+        const enderecoInput = document.getElementById('endereco');
+        const emailInput = document.getElementById('email');
+        const imagemInput = document.getElementById('imagem');
+
+        const previewNome = document.getElementById('preview-nome');
+        const previewTelefone = document.getElementById('preview-telefone');
+        const previewEndereco = document.getElementById('preview-endereco');
+        const previewEmail = document.getElementById('preview-email');
+        const previewImg = document.getElementById('preview-img');
+
+        // Função para atualizar o texto na pré-visualização
+        function updatePreview() {
+            previewNome.textContent = nomeInput.value || 'Seu Nome Completo';
+            previewTelefone.textContent = telefoneInput.value || '(00) 00000-0000';
+            previewEndereco.textContent = enderecoInput.value || 'Sua Rua, Nº 00';
+            previewEmail.textContent = emailInput.value || 'seu.email@exemplo.com';
+        }
+
+        // Adicionando 'event listeners' para atualização em tempo real
+        nomeInput.addEventListener('input', updatePreview);
+        telefoneInput.addEventListener('input', updatePreview);
+        enderecoInput.addEventListener('input', updatePreview);
+        emailInput.addEventListener('input', updatePreview);
+        
+        // Listener para a imagem
+        imagemInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Chamada inicial para preencher com placeholders
+        updatePreview();
+
+        // Funcionalidade do botão de download
+        const downloadBtn = document.getElementById('download-btn');
+        const cardPreview = document.getElementById('card-preview');
+
+        downloadBtn.addEventListener('click', () => {
+            // Usa html2canvas para capturar o div do cartão
+            html2canvas(cardPreview, {
+                scale: 2, // Aumenta a resolução da imagem para melhor qualidade
+                useCORS: true // Permite carregar imagens de outras origens
+            }).then(canvas => {
+                // Cria um link temporário para o download
+                const link = document.createElement('a');
+                link.download = 'cartao-inscricao.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click(); // Simula o clique no link para iniciar o download
+            });
+        });
+    </script>
+
+</body>
+</html>
+
